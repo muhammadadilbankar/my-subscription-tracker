@@ -1,3 +1,4 @@
+import Subscription from '../models/subscription.model.js';
 import User from '../models/user.model.js';
 
 export const getUsers = async (req, res, next) => { 
@@ -19,8 +20,10 @@ export const getUser = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
+
+        const subscriptions = await Subscription.find({ user: req.params.id });
         
-        res.status(200).json({ success: true, data: users });
+        res.status(200).json({ success: true, data: subscriptions });
     } catch (error) {
         next(error);
     }
