@@ -23,11 +23,11 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/subscriptions', subscriptionRouter);
 app.use('/api/v1/workflows', workflowRouter);
 
-app.use(errorMiddleware);
-
 app.get('/', (req, res) => {
     res.send('Welcome to the Subscription tracker API!');
 });
+
+app.use(errorMiddleware);
 
 app.listen(PORT, async () => {
     console.log(`Subscription tracker API is running on http://localhost:${PORT}`);

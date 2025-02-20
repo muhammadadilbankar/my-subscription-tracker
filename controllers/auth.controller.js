@@ -83,5 +83,28 @@ export const signIn = async (req, res, next) => {
 };
 
 export const signOut = async (req, res, next) => { 
-    
+    try {
+        //If using sessions, destroy the session and clear the cookie
+        if (req.session) {
+            req.session.destroy((err) => {
+                if (err) {
+                    return next(err);
+                }
+
+                res.clearCookie('connect.sid', { path: '/' });
+                return res.status(200).json({ success: true, message: 'User signed out successfully' });
+            })
+        }
+        else {
+            //If not using sessions, just send a success response
+            return res.status(200).json({
+                success: true,
+                message: 'User signed out successfully',
+            })
+        }
+        
+    } catch (error) {
+        next(error);
+    }
 };
+
