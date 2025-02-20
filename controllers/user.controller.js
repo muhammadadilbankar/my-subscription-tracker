@@ -31,9 +31,9 @@ export const getUser = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
     try {
-        const { userId } = req.params;
+        const { id } = req.params;
 
-        const user = await User.findByIdAndDelete(userId);
+        const user = await User.findByIdAndDelete(id);
 
         if (!user) {
             const error = new Error('User not found');
@@ -42,7 +42,7 @@ export const deleteUser = async (req, res, next) => {
         }
 
         //Delete the user if found
-        await User.findByIdAndDelete(userId);
+        await User.findByIdAndDelete(id);
 
         res.status(200).json({
             success: true,

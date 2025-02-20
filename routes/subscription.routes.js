@@ -6,7 +6,7 @@ const subscriptionRouter = Router();
 
 subscriptionRouter.get('/', (req, res) => res.send({ title: 'GET all  subscriptions' }));
 
-subscriptionRouter.get('/:id', (req, res) => res.send({ title: 'GET subscription details' }));
+subscriptionRouter.get('/:id', authorize, getUserSubscriptions);
 
 subscriptionRouter.post('/', authorize, createSubscription);
 

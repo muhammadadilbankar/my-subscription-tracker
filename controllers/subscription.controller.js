@@ -54,6 +54,10 @@ export const getUserSubscriptions = async (req, res, next) => {
             error.statusCode = 403;
             throw error;
         }
+
+        const subscriptions = await Subscription.find({ user: req.params.id });
+
+        res.status(200).json({ success: true, data: subscriptions})
     } catch (error) {
         next(error);
     }
