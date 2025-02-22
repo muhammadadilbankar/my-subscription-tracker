@@ -1,5 +1,6 @@
 // import Subscription from '../models/subscription.model.js';
 import User from '../models/user.model.js';
+import bcrypt from 'bcryptjs';
 
 export const getUsers = async (req, res, next) => { 
     try {
@@ -51,6 +52,41 @@ export const deleteUser = async (req, res, next) => {
     } catch (error) {
         next(error);
 
+    }
+}
+
+export const updateUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { name, email, password } = req.body;
+        
+        //Find the user by ID
+        const user = await User.findById(id);
+
+        if (!user) {
+            const error = new Error('User not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        //Update the user details
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'User updated',
+            data: user,
+        });
+        
+    } catch (error) {
+        next(error);
     }
 }
 

@@ -62,3 +62,70 @@ export const getUserSubscriptions = async (req, res, next) => {
         next(error);
     }
 }
+
+export const updateSubscription = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { name, price, currency, frequency, category, startDate, paymentMethod } = req.body;
+
+        //Find the subscription by ID
+        const subscription = await Subscription.findById(id);
+
+        if (!subscription) {
+            const error = new Error('Subscription not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        //Ensuring that the authenticated user is the owner of the subscription
+        if (subscription.user.toString() !== req.user.id) {
+            const error = new Error('Unauthorized');
+            error.statusCode = 401;
+            throw error;
+        }
+
+        //Update the subscription details
+        if (name) subscription.name = name;
+        if (price) subscription.price = price;       
+        if (currency) subscription.currency = currency;
+        if (frequency) subscription.frequency = frequency;
+        if (category) subscription.category = category;
+        if (startDate) subscription.startDate = startDate;
+        if (paymentMethod) subscription.paymentMethod = paymentMethod;
+
+        await subscription.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Subscription updated successfully',
+            data: subscription,
+        })
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const deleteSubscription = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const subscription = await Subscription.findById(id);
+
+        if (!subscription) {
+            const error = new Error('Subscription not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        //Delete the subscription if found
+        await Subscription.findByIdAndDelete(id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Subscription deleted successfully',
+        })
+    } catch (error) {
+        next(error);
+    }
+}

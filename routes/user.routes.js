@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { getUser, getUsers, deleteUser } from '../controllers/user.controller.js';
+import { getUser, getUsers, deleteUser, updateUser } from '../controllers/user.controller.js';
 
 import authorize from '../middlewares/auth.middleware.js';
 
@@ -12,7 +12,7 @@ userRouter.get('/:id', authorize, getUser);
 
 userRouter.post('/', (req, res) => { res.send({ title: 'CREATE all users' }) });
 
-userRouter.put('/:id', (req, res) => { res.send({ title: 'UPDATE user' }) });
+userRouter.put('/:id', authorize, updateUser);
 
 userRouter.delete('/:id', authorize, deleteUser);
 
